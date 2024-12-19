@@ -2,7 +2,7 @@
 
 set -x
 
-JSON_RPC="http://localhost:1234"
+JSON_RPC="http://localhost:8545"
 
 # start geth in a local container
 docker container run --rm -d --name deployment-proxy-geth -p 1234:8545 -e GETH_VERBOSITY=3 keydonix/geth-clique
@@ -10,7 +10,7 @@ docker container run --rm -d --name deployment-proxy-geth -p 1234:8545 -e GETH_V
 until curl --silent --fail $JSON_RPC -X 'POST' -H 'Content-Type: application/json' --data "{\"jsonrpc\":\"2.0\", \"id\":1, \"method\": \"net_version\", \"params\": []}"; do sleep 1; done
 
 # extract the variables we need from json output
-MY_ADDRESS="0x913dA4198E6bE1D5f5E4a40D0667f70C0B5430Eb"
+MY_ADDRESS="0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
 ONE_TIME_SIGNER_ADDRESS="0x$(cat output/deployment.json | jq --raw-output '.signerAddress')"
 GAS_COST="0x$(printf '%x' $(($(cat output/deployment.json | jq --raw-output '.gasPrice') * $(cat output/deployment.json | jq --raw-output '.gasLimit'))))"
 TRANSACTION="0x$(cat output/deployment.json | jq --raw-output '.transaction')"
